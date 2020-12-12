@@ -24,7 +24,7 @@ def setup_custom_logger(name):
     return logger
 
 
-def hit_poll(url_path, poll_option):
+def hit_poll(loop_number, url_path, poll_option):
     try:
         options = webdriver.ChromeOptions()
         options.add_argument('headless')
@@ -49,13 +49,12 @@ def hit_poll(url_path, poll_option):
         # /html/body/div[2]/div/div[1]/h1
         get_conf_div_text = web.find_element_by_xpath("/html/body/div[2]/div/div[1]/h1")
         if get_conf_div_text.text == "Poll Results":
-            log.info("Automated voting successfully completed.")
+            log.info("Automated voting successfully completed. [LOOP: {0}]".format(loop_number))
         else:
-            log.info("Automated voting failed for some reason....")
+            log.info("Automated voting failed for some reason.... [LOOP: {0}]".format(loop_number))
 
     except Exception as e:
-        print("Error: {0}".format(e))
-        log.error("Error: {0}".format(e))
+        log.error("Loop: {0} - Error: {1}".format(loop_number, e))
     finally:
         web.close()
 
@@ -64,9 +63,9 @@ if __name__ == '__main__':
     log = setup_custom_logger("PollTaker")
 
     i = 0
-    while i < 15:
+    while i < 16947:
         # min:max should be passed in, not static.
         vote_choice = random.randint(1, 9)
-        hit_poll('https://benspelledabc.me/polls/8/', vote_choice)
+        hit_poll(i, 'https://benspelledabc.me/polls/8/', vote_choice)
         i += 1
 
